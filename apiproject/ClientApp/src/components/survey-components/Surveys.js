@@ -3,10 +3,12 @@ import React, { Component } from 'react';
 // NOT COMPLETE
 
 export class Surveys extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {surveys: this.props.surveys}
+    }
+
     render(){
-        // Missing getting survey and user data into here
-        var surveys;
-        var user;
         return(
             <div className='container'>
                 <h1 className='header'>Available Surveys</h1>
@@ -21,7 +23,7 @@ export class Surveys extends Component {
                     </thead>
                     <tbody>
                         ${
-                            surveys.forEach(survey => {
+                            this.state.surveys.forEach(survey => {
                                 <tr>
                                     <td>
                                         survey.Title

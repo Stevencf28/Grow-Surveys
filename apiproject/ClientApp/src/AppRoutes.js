@@ -1,7 +1,7 @@
 import { Home } from "./components/Home";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
-import { Surveys } from "./components/Surveys";
+import { Surveys } from "./components/survey-components/Surveys";
 
 const AppRoutes = [
   {

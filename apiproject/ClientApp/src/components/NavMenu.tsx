@@ -68,6 +68,11 @@ export default function NavMenu() {
                   <button className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
                     <NavLink to={isLoggedIn ? 'logout' : 'login'}>{isLoggedIn ? 'Logout' : 'Login'}</NavLink>
                   </button>
+                  { !isLoggedIn &&
+                    <button className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
+                      <NavLink to='register'>Register</NavLink>
+                    </button>
+                  }
                 </div>
               </div>
             </div>

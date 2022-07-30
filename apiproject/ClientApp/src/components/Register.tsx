@@ -1,9 +1,41 @@
-﻿export default function Register() {
+﻿import { useNavigate } from "react-router-dom";
+
+export default function Register() {
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const username = e.target[1].value;
+    const password = e.target[2].value;
+    const firstName = e.target[3].value;
+    const lastName = e.target[4].value;
+    const accountType = e.target[5].value;
+    const user = { username, password, firstName, lastName, accountType }
+    const url = 'https://localhost:7214/register';
+    const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(user),
+		}
+    await fetch(url, requestOptions)
+      .then(response => response.json())
+      .then((data) => {
+        if (data){
+          localStorage.setItem("user", JSON.stringify(data));
+          navigate("/surveys", {replace: true});
+          navigate(0);
+        }
+      })
+      .catch((error) => {
+        alert("User Already Exists!");
+      });
+  };
+
     return (
       <div className="min-h-full flex items-center justify-center px-4 mt-40 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Create an Account</h2>
-          <form className="mt-8 space-y-6" action="/login" method="POST">
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="flex flex-col gap-10 rounded-md shadow-sm -space-y-px">
               <div>

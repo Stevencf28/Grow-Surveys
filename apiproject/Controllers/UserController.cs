@@ -4,60 +4,60 @@ using Microsoft.EntityFrameworkCore;
 
 namespace apiproject.Controllers
 {
-
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class UserController : Controller
     {
         private readonly AppDbContext _context;
-
         public UserController(AppDbContext context)
         {
             _context = context;
         }
-        
-        // GET: api/Users
+
         [HttpGet]
-        public async  Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetTodoItem(long id)
+        // POST: /login
+        [HttpPost("/login")]
+        public async Task<ActionResult<User>> Login([FromBody] User user)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
+            if (UserExists(user.UserName))
             {
-                return NotFound();
+                Console.WriteLine("Found User");
+                var User = await _context.Users.FindAsync(user.UserName);
+                if (User.Password.Equals(user.Password))
+                {
+                    Console.WriteLine("Login Success!");
+                    return User;
+                }
             }
+            return Content("Incorrect Credentials!");
+        }
 
+        // POST: /register
+        [HttpPost("/register")]
+        public async Task<ActionResult<User>> Register([FromBody] User user)
+        {
+            if (UserExists(user.UserName))
+            {
+                return Content("User already exists!");
+            }
+            var nextId = _context.Users.Count() + 1;
+            user.UserId = nextId;
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
             return user;
+            
         }
 
-        // POST: api/Users
-        [HttpPost]
-        public async Task<ActionResult<User>> PostTodoItem(User user)
-        {
-            if (!UserExists(user.UserId))
-            {
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("GetUser", new { id = user.UserId }, user);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
 
         // Checks if user exists
-        private bool UserExists(long id)
+        private bool UserExists(string username)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return (_context.Users?.Any(e => e.UserName == username)).GetValueOrDefault();
         }
     }
 }

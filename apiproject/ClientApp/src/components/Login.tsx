@@ -1,10 +1,36 @@
-﻿export default function Login() {
+﻿import { useNavigate } from "react-router-dom";
+
+
+export default function Login() {
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const url = 'https://localhost:7214/login';
+    const requestOptions = {
+			method: 'POST',
+			body: formData
+		}
+    await fetch(url, requestOptions)
+      .then(response => response.json())
+      .then((data) => {
+        if (data){
+          localStorage.setItem("user", JSON.stringify(data));
+          navigate("/surveys", {replace: true});
+          navigate(0);
+        }
+      })
+      .catch((error) => {
+        alert("Wrong Username or Password");
+      });
+  };
+
   return (
     <div className="min-h-full flex items-center justify-center px-4 mt-40 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Sign in to your account</h2>
-        <form className="mt-8 space-y-6" action="/login" method="POST">
-          <input type="hidden" name="remember" defaultValue="true" />
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
           <div className="flex flex-col gap-10 rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="username" className="sr-only">

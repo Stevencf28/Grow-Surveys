@@ -13,8 +13,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function NavMenu() {
-  const isLoggedIn = false;
-
+  var isLoggedIn = localStorage.getItem("user");
   return (
     <>
       <Disclosure as="nav" className="bg-gray-800">
@@ -66,11 +65,11 @@ export default function NavMenu() {
                 </div>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">              
                   <button className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
-                    <NavLink to={isLoggedIn ? 'logout' : 'login'}>{isLoggedIn ? 'Logout' : 'Login'}</NavLink>
+                    <NavLink reloadDocument to={isLoggedIn ? 'logout' : 'login'} >{isLoggedIn ? 'Logout' : 'Login'}</NavLink>
                   </button>
                   { !isLoggedIn &&
                     <button className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
-                      <NavLink to='register'>Register</NavLink>
+                      <NavLink reloadDocument to='register' >Register</NavLink>
                     </button>
                   }
                 </div>

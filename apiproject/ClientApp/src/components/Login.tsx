@@ -6,14 +6,11 @@ export default function Login() {
   
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const username = e.target[1].value;
-    const password = e.target[2].value;
-    const user = { username, password }
+    const formData = new FormData(e.target);
     const url = 'https://localhost:7214/login';
     const requestOptions = {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(user),
+			body: formData
 		}
     await fetch(url, requestOptions)
       .then(response => response.json())
@@ -34,7 +31,6 @@ export default function Login() {
       <div className="max-w-md w-full space-y-8">
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Sign in to your account</h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
-          <input type="hidden" name="remember" defaultValue="true" />
           <div className="flex flex-col gap-10 rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="username" className="sr-only">

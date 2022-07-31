@@ -22,7 +22,7 @@ namespace apiproject.Controllers
 
         // POST: /login
         [HttpPost("/login")]
-        public async Task<ActionResult<User>> Login([FromBody] User user)
+        public async Task<ActionResult<User>> Login([FromForm] User user)
         {
             if (UserExists(user.UserName))
             {
@@ -39,7 +39,7 @@ namespace apiproject.Controllers
 
         // POST: /register
         [HttpPost("/register")]
-        public async Task<ActionResult<User>> Register([FromBody] User user)
+        public async Task<ActionResult<User>> Register([FromForm] User user)
         {
             if (UserExists(user.UserName))
             {

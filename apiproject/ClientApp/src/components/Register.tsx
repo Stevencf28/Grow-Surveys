@@ -5,17 +5,11 @@ export default function Register() {
   
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const username = e.target[1].value;
-    const password = e.target[2].value;
-    const firstName = e.target[3].value;
-    const lastName = e.target[4].value;
-    const accountType = e.target[5].value;
-    const user = { username, password, firstName, lastName, accountType }
+    const formData = new FormData(e.target);
     const url = 'https://localhost:7214/register';
     const requestOptions = {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(user),
+			body: formData
 		}
     await fetch(url, requestOptions)
       .then(response => response.json())

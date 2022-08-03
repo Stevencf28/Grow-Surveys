@@ -27,6 +27,7 @@ namespace apiproject.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Survey>> GetSurvey(int id)
         {
+            Console.WriteLine("Getting Survey...");
             var survey = await _context.Surveys.FindAsync(id);
 
             if (survey == null)
@@ -41,6 +42,7 @@ namespace apiproject.Controllers
         [HttpPut("/update/{id:int}")]
         public async Task<IActionResult> PutSurvey(int id, Survey survey)
         {
+            Console.WriteLine("Updating Survey...");
             if (id != survey.SurveyId)
             {
                 return BadRequest();
@@ -50,6 +52,7 @@ namespace apiproject.Controllers
 
             try
             {
+                Console.WriteLine("Survey Updated!");
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -69,17 +72,24 @@ namespace apiproject.Controllers
 
         // Create Survey
         [HttpPost("/create")]
-        public async Task<ActionResult<Survey>> CreateSurvey(Survey survey)
+        public async Task<ActionResult<Survey>> CreateSurvey([FromForm] Survey survey)
         {
+            if (SurveyExists(survey.SurveyId))
+            {
+                return Content("Survey already exists!");
+            }
+            var nextId = _context.Surveys.Count() + 1;
+            survey.SurveyId = nextId;
             _context.Surveys.Add(survey);
             await _context.SaveChangesAsync();
-
             return survey;
+
         }
 
         [HttpDelete("/delete/{id:int}")]
         public async Task<ActionResult> DeleteSurvey(int id)
         {
+            Console.WriteLine("Deleting Survey...");
             var survey = await _context.Surveys.FindAsync(id);
 
             if (survey == null)
@@ -89,6 +99,7 @@ namespace apiproject.Controllers
             _context.Attach(survey);
             _context.Remove(survey);
             await _context.SaveChangesAsync();
+            Console.WriteLine("Survey Deleted!");
             return Ok();
         }
 

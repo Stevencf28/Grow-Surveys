@@ -30,7 +30,6 @@ export default function Register() {
         <div className="max-w-md w-full space-y-8">
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Create an Account</h2>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
-            <input type="hidden" name="remember" defaultValue="true" />
             <div className="flex flex-col gap-10 rounded-md shadow-sm -space-y-px">
               <div>
                 <label htmlFor="username" className="sr-only">

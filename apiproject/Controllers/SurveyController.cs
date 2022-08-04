@@ -38,6 +38,21 @@ namespace apiproject.Controllers
             return survey;
         }
 
+        // Get Survey by ID
+        [HttpGet("/answers/{id:int}")]
+        public async Task<ActionResult<IEnumerable<Answer>>> GetAnswers(int id)
+        {
+            Console.WriteLine("Getting Answers...");
+            var answers = await _context.Answers.Where(ans => ans.SurveyId == id).ToListAsync();
+
+            if (answers == null)
+            {
+                return NotFound();
+            }
+
+            return answers;
+        }
+
         // Update Survey
         [HttpPut("/update/{id:int}")]
         public async Task<IActionResult> PutSurvey(int id, Survey survey)
@@ -86,6 +101,18 @@ namespace apiproject.Controllers
 
         }
 
+        // Answer Survey
+        [HttpPost("/answer")]
+        public async Task<ActionResult<Answer>> CreateAnswer([FromForm] Answer answer)
+        {
+            var nextId = _context.Answers.Count() + 1;
+            answer.AnswerId = nextId;
+            _context.Answers.Add(answer);
+            await _context.SaveChangesAsync();
+            return answer;
+
+        }
+
         [HttpDelete("/delete/{id:int}")]
         public async Task<ActionResult> DeleteSurvey(int id)
         {
@@ -100,6 +127,23 @@ namespace apiproject.Controllers
             _context.Remove(survey);
             await _context.SaveChangesAsync();
             Console.WriteLine("Survey Deleted!");
+            return Ok();
+        }
+
+        [HttpDelete("/delete/answer/{id:int}")]
+        public async Task<ActionResult> DeleteAnswer(int id)
+        {
+            Console.WriteLine("Deleting Answer...");
+            var answer = await _context.Answers.FindAsync(id);
+
+            if (answer == null)
+            {
+                return NotFound();
+            }
+            _context.Attach(answer);
+            _context.Remove(answer);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Answer Deleted!");
             return Ok();
         }
 

@@ -38,26 +38,52 @@ namespace apiproject.Controllers
             return survey;
         }
 
-        // Update Survey
-        [HttpPut("/update/{id:int}")]
-        public async Task<IActionResult> PutSurvey(int id, Survey survey)
+        // Get Answer by ID
+        [HttpGet("/answers/{id:int}")]
+        public async Task<ActionResult<IEnumerable<Answer>>> GetAnswers(int id)
         {
-            Console.WriteLine("Updating Survey...");
-            if (id != survey.SurveyId)
+            Console.WriteLine("Getting Answers...");
+            var answers = await _context.Answers.Where(ans => ans.SurveyId == id).ToListAsync();
+
+            if (answers == null)
+            {
+                return NotFound();
+            }
+
+            return answers;
+        }
+
+        [HttpGet("/answer/{id:int}")]
+        public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer(int id)
+        {
+            var answersByUser = await _context.Answers.Where(ans => ans.SurveyId == id).ToListAsync();
+            if (answersByUser == null)
+            {
+                return NotFound();
+            }
+            return answersByUser;
+        }
+
+        // Update Answer
+        [HttpPut("/answer/update/{id:int}")]
+        public async Task<IActionResult> UpdateAnswer(int id, Answer answer)
+        {
+            Console.WriteLine("Updating Answer...");
+            if (id != answer.AnswerId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(survey).State = EntityState.Modified;
+            _context.Entry(answer).State = EntityState.Modified;
 
             try
             {
-                Console.WriteLine("Survey Updated!");
+                Console.WriteLine("Answer Updated!");
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SurveyExists(id))
+                if (!AnswerExists(id))
                 {
                     return NotFound();
                 }
@@ -86,6 +112,19 @@ namespace apiproject.Controllers
 
         }
 
+        // Answer Survey
+        [HttpPost("/answer")]
+        public async Task<ActionResult<Answer>> CreateAnswer([FromForm] Answer answer)
+        {
+            var nextId = _context.Answers.Count() + 1;
+            answer.AnswerId = nextId;
+            _context.Answers.Add(answer);
+            await _context.SaveChangesAsync();
+            return answer;
+
+        }
+
+        // Delete Survey
         [HttpDelete("/delete/{id:int}")]
         public async Task<ActionResult> DeleteSurvey(int id)
         {
@@ -103,10 +142,34 @@ namespace apiproject.Controllers
             return Ok();
         }
 
+        // Delete Answer
+        [HttpDelete("/delete/answer/{id:int}")]
+        public async Task<ActionResult> DeleteAnswer(int id)
+        {
+            Console.WriteLine("Deleting Answer...");
+            var answer = await _context.Answers.FindAsync(id);
+
+            if (answer == null)
+            {
+                return NotFound();
+            }
+            _context.Attach(answer);
+            _context.Remove(answer);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Answer Deleted!");
+            return Ok();
+        }
+
         // Check if Survey exists
         private bool SurveyExists(int surveyId)
         {
             return (_context.Surveys?.Any(e => e.SurveyId == surveyId)).GetValueOrDefault();
+        }
+
+        // Check if Answer exists
+        private bool AnswerExists(int answerId)
+        {
+            return (_context.Answers?.Any(e => e.AnswerId == answerId)).GetValueOrDefault();
         }
     }
 }

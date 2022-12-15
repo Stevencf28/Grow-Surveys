@@ -1,6 +1,6 @@
 # Grow Surveys
 
-<img src="./public/readme.png" />
+<img src="./apiproject/ClientApp/public/readme.png" />
 
 # Getting Started with Create React App
 
